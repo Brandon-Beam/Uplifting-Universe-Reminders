@@ -1,14 +1,15 @@
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tasks CASCADE;
 
+--parents could alternatively be account holder
 CREATE TABLE users (
   id SERIAL PRIMARY KEY NOT NULL,
   user_name VARCHAR(255) NOT NULL,
   phone VARCHAR(15) NOT NULL UNIQUE,
-  message TEXT DEFAULT 'well done',
+  message TEXT DEFAULT 'good job',
   password VARCHAR(255) NOT NULL
 );
---work wont be used till stretch
+
 CREATE TABLE tasks (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
