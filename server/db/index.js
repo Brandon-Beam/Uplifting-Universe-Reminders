@@ -30,7 +30,6 @@ app.post('/tasks', (req, res) => {
     .catch(error => {
       res.status(500).send(error);
     })
-  res.redirect('/')
 })
 
 app.put('/tasks/:id', (req, res) => {
