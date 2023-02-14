@@ -11,7 +11,7 @@ const pool = new Pool({
 const getTasks = () => {
   return pool
     .query(`
-    select * from tasks;`)
+    select * from tasks ORDER BY priority DESC, date_time, task_name;`)
     .then((result) => {
       return result.rows
     })

@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import "bootstrap/dist/css/bootstrap.min.css";
+import Table from 'react-bootstrap/Table';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [data, setData] = useState([]);
   useEffect(() => {
     getTasks();
   }, []);
+
   function getTasks() {
     fetch('http://localhost:3001')
       .then(response => {
-        return response.text();
+        return response.json();
       })
       .then(data => {
-        setTasks(data);
+        setData(data);
       });
   }
 
@@ -25,7 +28,7 @@ function App() {
       body: JSON.stringify({ task_name }),
     })
       .then(response => {
-        return response.text();
+        return response.json();
       })
       .then(() => {
         getTasks();
@@ -38,7 +41,7 @@ function App() {
       method: 'DELETE',
     })
       .then(response => {
-        return response.text();
+        return response.json();
       })
       .then(() => {
         getTasks();
@@ -60,18 +63,37 @@ function App() {
       );
   }
 
-  // const task = tasks.map((task) => {
-  //   const task_name = task.task_name
-
-  //   return (
-  //     <li>{task_name}</li>
-  //   )
-  // }
-  // )
 
   return (
     <div>
-      {tasks ? tasks : 'There is no task data available'}
+      <h2>You Matter</h2>
+      <Table striped bordered hover variant="dark">
+        <thead>
+          <tr>
+            <th>task ID</th>
+            <th>task Name</th>
+            <th>proirity</th>
+            <th>time and date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data &&
+            data.map((task) => {
+              console.log(task.priority)
+              return (
+                <tr key={task.id}>
+                  <td>{task.id}</td>
+                  <td>{task.task_name}</td>
+                  {task.priority === true ?
+                    <td>high priority</td> :
+                    <td>low priority</td>}
+                  <td>{task.date_time}</td>
+                </tr>
+              )
+            })}
+        </tbody>
+      </Table>
+      {console.log(data)}
       <br />
       <button onClick={createTask}>Add task</button>
       <br />
