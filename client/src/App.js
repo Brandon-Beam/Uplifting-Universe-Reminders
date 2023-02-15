@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "./App.css"
 import TaskList from './components/TaskList';
 import AddTask from './components/AddTask';
+import EditTask from './components/EditTask';
 
 function App() {
+  const ADD = "ADD";
+  const EDIT = "EDIT";
+
   const [data, setData] = useState([]);
   const [selectedTask, setSelectedTask] = useState([]);
+  const [formData, setFormData] = useState({ name: '' });
+  const [mode, setMode] = useState(ADD);
+
   useEffect(() => {
     getTasks();
   }, []);
-  const [formData, setFormData] = useState({ name: '' });
 
   function getTasks() {
     fetch('http://localhost:3001')
@@ -48,6 +54,7 @@ function App() {
       })
       .then(() => {
         getTasks();
+        setSelectedTask([])
       });
   }
 
@@ -56,18 +63,19 @@ function App() {
       deleteTask(task)
   }
 
-  function updateTask() {
-    let id = prompt('Enter task id');
-    let task_name = prompt('Enter task name');
+  function updateTask(task_name, selectedTask, complete) {
+    let id = selectedTask
+    let done = complete || false
     fetch(`/tasks/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task_name }),
+      body: JSON.stringify({ task_name, done }),
     })
       .then(() =>
-        getTasks()
+        getTasks(),
+        setSelectedTask([])
       );
   }
 
@@ -88,19 +96,35 @@ function App() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    createTask(formData.name);
-    setFormData({ name: '' })
+    if (mode === ADD) {
+      createTask(formData.name)
+      setFormData({ name: '' })
+    } if (mode === EDIT && selectedTask.length === 1) {
+      updateTask(formData.name, selectedTask)
+      setFormData({ name: '' })
+    }
+    if (mode === EDIT && selectedTask.length !== 1) {
+      alert('invalid inputs')
+      console.log(selectedTask)
+    }
+  }
+
+  const complete = (data) => {
+    for (const task of selectedTask) {
+      let item = data.filter(item => item.id === task)
+      return item
+    }
   }
 
   return (
-    <div>
+    <div class='myclass'>
       <h2>You Matter</h2>
-      <AddTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} />
-      <button class="btn btn-dark" onClick={updateTask}>edit task</button>
-      <button class="btn btn-danger" onClick={deleteSelected}>Delete task</button>
+      {mode === ADD && (
+        <AddTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected} />)}
+      {mode === EDIT && (
+        <EditTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected} />)}
+      <button class="btn btn-success" onClick={() => console.log(complete(data))}>Completion</button>
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask} />
-
-
     </div>
   );
 }

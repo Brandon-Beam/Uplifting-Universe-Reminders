@@ -10,7 +10,7 @@ export default function TaskList(props) {
         <tr>
           <th>task ID</th>
           <th>task Name</th>
-          <th>proirity</th>
+          <th>priority</th>
           <th>time and date</th>
           <th>select</th>
         </tr>
