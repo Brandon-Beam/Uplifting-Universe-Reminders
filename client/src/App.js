@@ -6,10 +6,14 @@ import AddTask from './components/AddTask';
 import EditTask from './components/EditTask';
 import Header from './components/Header';
 
+
+import './Sample.css';
+import TimeSelect from './components/TimeSelect';
+
 function App() {
   const ADD = "ADD";
   const EDIT = "EDIT";
-
+  const [value, onChange] = useState(new Date());
   const [data, setData] = useState([]);
   const [selectedTask, setSelectedTask] = useState([]);
   const [formData, setFormData] = useState({ name: '' });
@@ -29,14 +33,14 @@ function App() {
       });
   }
 
-  function createTask(task) {
+  function createTask(task, date_time) {
     let task_name = task;
     fetch('/tasks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task_name }),
+      body: JSON.stringify({ task_name, date_time }),
     })
       .then(response => {
         return response.json();
@@ -64,7 +68,7 @@ function App() {
       deleteTask(task)
   }
 
-  function updateTask(task_name, selectedTask, complete) {
+  function updateTask(task_name, selectedTask, complete, date_time) {
     let id = selectedTask
     let done = complete || false
     fetch(`/tasks/${id}`, {
@@ -72,7 +76,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task_name, done }),
+      body: JSON.stringify({ task_name, done, date_time }),
     })
       .then(() =>
         getTasks(),
@@ -98,30 +102,28 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === ADD && formData.name !== '') {
-      createTask(formData.name)
+      createTask(formData.name, value)
       setFormData({ name: '' })
     } if (mode === EDIT && selectedTask.length === 1) {
-      updateTask(formData.name, selectedTask)
+      updateTask(formData.name, selectedTask, false, value)
       setFormData({ name: '' })
     }
     if (mode === EDIT && selectedTask.length !== 1) {
       alert('invalid inputs')
-      console.log(selectedTask)
     }
   }
 
   const complete = (data) => {
     for (const task of selectedTask) {
       let item = data.filter(item => item.id === task)
-      console.log(item[0].task_name);
       updateTask(item[0].task_name, task, true);
-      console.log(data)
     }
   }
 
   return (
     <div className='myclass'>
       <Header data={data} />
+      <TimeSelect value={value} onChange={onChange} />
       {mode === ADD && (
         <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
           formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected}

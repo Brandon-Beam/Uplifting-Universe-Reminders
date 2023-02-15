@@ -22,9 +22,10 @@ const getTasks = () => {
 
 
 const updateTask = (body, id) => {
-  const { task_name, done } = body
+  const { task_name, done, date_time } = body
+  console.log(body)
   return pool
-    .query('UPDATE tasks SET task_name = $1, completed = $2 WHERE id = $3;', [task_name, done, id])
+    .query('UPDATE tasks SET task_name = $1, date_time = $2, completed = $3 WHERE id = $4;', [task_name, date_time, done, id])
     .then((result) => {
       return result.rows
     })
@@ -36,7 +37,7 @@ const updateTask = (body, id) => {
 const createTask = (body) => {
   const { task_name, date_time } = body
   return pool
-    .query('INSERT INTO tasks (user_id, task_name, priority, date_time) VALUES ($1, $2, $3, $4) RETURNING *', [1, task_name, false, '2023-02-08 14:00:00'])
+    .query('INSERT INTO tasks (user_id, task_name, priority, date_time) VALUES ($1, $2, $3, $4) RETURNING *', [1, task_name, false, date_time])
     .then((result) => {
       return result.rows
     })
