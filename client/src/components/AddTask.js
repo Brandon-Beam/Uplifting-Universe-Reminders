@@ -9,6 +9,8 @@ export default function AddTask(props) {
   const EDIT = props.EDIT
   const setMode = props.setMode
   const deleteSelected = props.deleteSelected
+  const data = props.data
+  const complete = props.complete
   return (
     <div>
       < Form onSubmit={handleSubmit} >
@@ -18,8 +20,9 @@ export default function AddTask(props) {
         </Form.Group>
         <Button type="submit">Add Task</Button>
       </Form >
-      <button class="btn btn-dark" onClick={() => setMode(EDIT)}>Edit Mode</button>
-      <button class="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
+      <button className="btn btn-dark" onClick={() => setMode(EDIT)}>Edit Mode</button>
+      <button className="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
+      <button className="btn btn-success" onClick={() => complete(data)}>Complete Task</button>
     </div >
   )
 }

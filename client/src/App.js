@@ -4,6 +4,7 @@ import "./App.css"
 import TaskList from './components/TaskList';
 import AddTask from './components/AddTask';
 import EditTask from './components/EditTask';
+import Header from './components/Header';
 
 function App() {
   const ADD = "ADD";
@@ -96,7 +97,7 @@ function App() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (mode === ADD) {
+    if (mode === ADD && formData.name !== '') {
       createTask(formData.name)
       setFormData({ name: '' })
     } if (mode === EDIT && selectedTask.length === 1) {
@@ -119,14 +120,18 @@ function App() {
   }
 
   return (
-    <div class='myclass'>
-      <h2>You Matter</h2>
+    <div className='myclass'>
+      <Header data={data} />
       {mode === ADD && (
-        <AddTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected} />)}
+        <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
+          formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected}
+          complete={complete} data={data} />)}
       {mode === EDIT && (
-        <EditTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected} />)}
-      <button class="btn btn-success" onClick={() => complete(data)}>Completion</button>
-      <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask} />
+        <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
+          formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected}
+          complete={complete} data={data} />)}
+      <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask}
+      />
     </div>
   );
 }
