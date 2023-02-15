@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+
 import TaskList from './components/TaskList';
+import AddTask from './components/AddTask';
 
 function App() {
   const [data, setData] = useState([]);
@@ -95,13 +95,7 @@ function App() {
   return (
     <div>
       <h2>You Matter</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>task name</Form.Label>
-          <Form.Control value={formData.name} onChange={handleChange} name="name" type="name" placeholder="task name" />
-        </Form.Group>
-        <Button type="submit">Add Task</Button>
-      </Form>
+      <AddTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} />
       <button class="btn btn-dark" onClick={updateTask}>edit task</button>
       <button class="btn btn-danger" onClick={deleteSelected}>Delete task</button>
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask} />
