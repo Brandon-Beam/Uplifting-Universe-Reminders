@@ -13,6 +13,7 @@ export default function TaskList(props) {
           <th>priority</th>
           <th>time and date</th>
           <th>select</th>
+          <th>complete</th>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +34,9 @@ export default function TaskList(props) {
                     onChange={() => handleTaskSelection(task.id)}
                   />
                 </td>
+                {task.completed === true ?
+                  <td>Well done!!</td> :
+                  <td>You can do it!!</td>}
               </tr>
             )
           })}

@@ -112,7 +112,9 @@ function App() {
   const complete = (data) => {
     for (const task of selectedTask) {
       let item = data.filter(item => item.id === task)
-      return item
+      console.log(item[0].task_name);
+      updateTask(item[0].task_name, task, true);
+      console.log(data)
     }
   }
 
@@ -123,7 +125,7 @@ function App() {
         <AddTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected} />)}
       {mode === EDIT && (
         <EditTask handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected} />)}
-      <button class="btn btn-success" onClick={() => console.log(complete(data))}>Completion</button>
+      <button class="btn btn-success" onClick={() => complete(data)}>Completion</button>
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask} />
     </div>
   );
