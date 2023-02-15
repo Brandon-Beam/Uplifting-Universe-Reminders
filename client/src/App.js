@@ -11,14 +11,16 @@ import './Sample.css';
 import TimeSelect from './components/TimeSelect';
 
 function App() {
+  //view modes
   const ADD = "ADD";
   const EDIT = "EDIT";
+  // state
   const [value, onChange] = useState(new Date());
   const [data, setData] = useState([]);
   const [selectedTask, setSelectedTask] = useState([]);
   const [formData, setFormData] = useState({ name: '' });
   const [mode, setMode] = useState(ADD);
-
+  // calls getTasks, prevents repeat
   useEffect(() => {
     getTasks();
   }, []);
@@ -32,9 +34,10 @@ function App() {
         setData(data);
       });
   }
-
-  function createTask(task, date_time) {
+  //dateTime needs to be converted to local 
+  function createTask(task, dateTime) {
     let task_name = task;
+    let date_time = dateTime.toLocaleString()
     fetch('/tasks', {
       method: 'POST',
       headers: {
@@ -67,10 +70,11 @@ function App() {
     for (const task of selectedTask)
       deleteTask(task)
   }
-
-  function updateTask(task_name, selectedTask, complete, date_time) {
+  //dateTime needs to be converted to local 
+  function updateTask(task_name, selectedTask, complete, dateTime) {
     let id = selectedTask
     let done = complete || false
+    let date_time = dateTime.toLocaleString()
     fetch(`/tasks/${id}`, {
       method: 'PUT',
       headers: {

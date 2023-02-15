@@ -26,7 +26,7 @@ export default function TaskList(props) {
                 {task.priority === true ?
                   <td>high priority</td> :
                   <td>low priority</td>}
-                <td>{task.date_time}</td>
+                <td>{new Date(task.date_time).toString()}</td>
                 <td>
                   <input
                     type="checkbox"
