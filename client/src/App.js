@@ -20,6 +20,7 @@ function App() {
   const [selectedTask, setSelectedTask] = useState([]);
   const [formData, setFormData] = useState({ name: '' });
   const [mode, setMode] = useState(ADD);
+  const [isChecked, setIsChecked] = useState(false);
   // calls getTasks, prevents repeat
   useEffect(() => {
     getTasks();
@@ -35,7 +36,7 @@ function App() {
       });
   }
   //dateTime needs to be converted to local 
-  function createTask(task, dateTime) {
+  function createTask(task, dateTime, priority) {
     let task_name = task;
     let date_time = dateTime.toLocaleString()
     fetch('/tasks', {
@@ -43,7 +44,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task_name, date_time }),
+      body: JSON.stringify({ task_name, date_time, priority }),
     })
       .then(response => {
         return response.json();
@@ -106,7 +107,7 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === ADD && formData.name !== '') {
-      createTask(formData.name, value)
+      createTask(formData.name, value, isChecked)
       setFormData({ name: '' })
     } if (mode === EDIT && selectedTask.length === 1) {
       updateTask(formData.name, selectedTask, false, value)
@@ -120,25 +121,39 @@ function App() {
   const complete = (data) => {
     for (const task of selectedTask) {
       let item = data.filter(item => item.id === task)
-      updateTask(item[0].task_name, task, true);
+      updateTask(item[0].task_name, task, true, item[0].date_time);
     }
   }
 
   return (
-    <div className='myclass'>
+    <div className='myapp'>
       <Header data={data} />
-      <TimeSelect value={value} onChange={onChange} />
-      {mode === ADD && (
-        <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
-          formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected}
-          complete={complete} data={data} />)}
-      {mode === EDIT && (
-        <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
-          formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected}
-          complete={complete} data={data} />)}
+      <div className='timepriority'>
+        <TimeSelect value={value} onChange={onChange} />
+        <div className="checkbox-wrapper">
+          <label>
+            <input type="checkbox" checked={isChecked}
+              onChange={() => setIsChecked((prev) => !prev)} />
+            <span>priority</span>
+          </label>
+        </div>
+      </div>
+      {
+        mode === ADD && (
+          <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
+            formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected}
+            complete={complete} data={data}
+            isChecked={isChecked} setIsChecked={setIsChecked} />)
+      }
+      {
+        mode === EDIT && (
+          <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
+            formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected}
+            complete={complete} data={data} />)
+      }
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask}
       />
-    </div>
+    </div >
   );
 }
 export default App;

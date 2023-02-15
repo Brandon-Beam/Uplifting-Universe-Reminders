@@ -22,7 +22,6 @@ export default function TimeSelect(props) {
           yearAriaLabel="Year"
         />
       </main>
-      <button className="btn btn-success" onClick={() => console.log(value)}>verify time</button>
     </div>
   )
 } 

@@ -35,9 +35,9 @@ const updateTask = (body, id) => {
 }
 
 const createTask = (body) => {
-  const { task_name, date_time } = body
+  const { task_name, date_time, priority } = body
   return pool
-    .query('INSERT INTO tasks (user_id, task_name, priority, date_time) VALUES ($1, $2, $3, $4) RETURNING *', [1, task_name, false, date_time])
+    .query('INSERT INTO tasks (user_id, task_name, priority, date_time) VALUES ($1, $2, $3, $4) RETURNING *', [1, task_name, priority, date_time])
     .then((result) => {
       return result.rows
     })
