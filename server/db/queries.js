@@ -22,10 +22,10 @@ const getTasks = () => {
 
 
 const updateTask = (body, id) => {
-  const { task_name, done, date_time } = body
+  const { task_name, done, date_time, priority } = body
   console.log(body)
   return pool
-    .query('UPDATE tasks SET task_name = $1, date_time = $2, completed = $3 WHERE id = $4;', [task_name, date_time, done, id])
+    .query('UPDATE tasks SET task_name = $1, date_time = $2, completed = $3, priority = $4 WHERE id = $5;', [task_name, date_time, done, priority, id])
     .then((result) => {
       return result.rows
     })

@@ -72,7 +72,7 @@ function App() {
       deleteTask(task)
   }
   //dateTime needs to be converted to local 
-  function updateTask(task_name, selectedTask, complete, dateTime) {
+  function updateTask(task_name, selectedTask, complete, dateTime, priority) {
     let id = selectedTask
     let done = complete || false
     let date_time = dateTime.toLocaleString()
@@ -81,7 +81,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task_name, done, date_time }),
+      body: JSON.stringify({ task_name, done, date_time, priority }),
     })
       .then(() =>
         getTasks(),
@@ -110,7 +110,7 @@ function App() {
       createTask(formData.name, value, isChecked)
       setFormData({ name: '' })
     } if (mode === EDIT && selectedTask.length === 1) {
-      updateTask(formData.name, selectedTask, false, value)
+      updateTask(formData.name, selectedTask, false, value, isChecked)
       setFormData({ name: '' })
     }
     if (mode === EDIT && selectedTask.length !== 1) {
