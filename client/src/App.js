@@ -54,6 +54,21 @@ function App() {
       });
   }
 
+  function textMessage() {
+
+    fetch('/api/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ body: "even bigger success" }),
+    })
+      .then(response => {
+        return response.json();
+      })
+
+  }
+
   function deleteTask(id) {
     fetch(`/tasks/${id}`, {
       method: 'DELETE',
@@ -128,6 +143,7 @@ function App() {
   return (
     <div className='myapp'>
       <Header data={data} />
+      <button className="btn btn-success" onClick={() => textMessage()}>Complete Task</button>
       <div className='timepriority'>
         <TimeSelect value={value} onChange={onChange} />
         <div className="checkbox-wrapper">
