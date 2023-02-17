@@ -5,6 +5,7 @@ const port = 3001
 const { getTasks, createTask, deleteTask, updateTask } = require('./queries')
 
 const cron = require('node-cron');
+const { response } = require('express')
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -17,8 +18,6 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
   next();
 });
-
-
 
 app.get('/', (req, res) => {
   getTasks()
@@ -96,6 +95,35 @@ app.post('/api/cron', (req, res) => {
         res.send(JSON.stringify({ success: false }));
       });
   });
+});
+// body has to be on one line for formatting of text
+cron.schedule('0 22 * * *', () => {
+  console.log(`'running a test for now'`);
+  getTasks()
+    .then(response => {
+      let today = new Date().getDate()
+      const tasksCompleted = response.filter(task => task.completed === true && task.date_time.getDate() === today);
+      console.log(tasksCompleted.length);
+      console.log(today)
+      if (tasksCompleted.length !== 0) {
+        client.messages
+          .create({
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: process.env.MY_NUMBER,
+            body: `You completed ${tasksCompleted.length} of your tasks today! May todays success be the beggining of tomorrows achievments`
+          })
+      } else {
+        client.messages
+          .create({
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: process.env.MY_NUMBER,
+            body: `No feeling is final. feelings of hopelessness dispair or dread wont be what defines the rest of your life and things will get better. there will be a tomorrow, you will be here for it, and the world is a better place with you in it! Please dont be too hard on yourself theres always tomorrow.`
+          })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
 });
 
 app.listen(port, () => {

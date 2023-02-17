@@ -140,9 +140,11 @@ function App() {
       console.log(dateToCron(value))
       createTask(formData.name, value, isChecked)
       setFormData({ name: '' })
+      setIsChecked(false)
     } if (mode === EDIT && selectedTask.length === 1) {
       updateTask(formData.name, selectedTask, false, value, isChecked)
       setFormData({ name: '' })
+      setIsChecked(false)
     }
     if (mode === EDIT && selectedTask.length !== 1) {
       alert('invalid inputs')
