@@ -4,6 +4,7 @@ const app = express()
 const port = 3001
 const { getTasks, createTask, deleteTask, updateTask } = require('./queries')
 
+const cron = require('node-cron');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -16,6 +17,8 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
   next();
 });
+
+
 
 app.get('/', (req, res) => {
   getTasks()
@@ -77,19 +80,22 @@ app.post('/api/messages', (req, res) => {
 
 app.post('/api/cron', (req, res) => {
   res.header('Content-Type', 'application/json');
-  client.messages
-    .create({
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: process.env.MY_NUMBER,
-      body: req.body.body
-    })
-    .then(() => {
-      res.send(JSON.stringify({ success: true }));
-    })
-    .catch(err => {
-      console.log(err);
-      res.send(JSON.stringify({ success: false }));
-    });
+  cron.schedule(req.body.time, () => {
+    console.log(`'running a test for ${req.body.time}'`);
+    client.messages
+      .create({
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: process.env.MY_NUMBER,
+        body: req.body.body
+      })
+      .then(() => {
+        res.send(JSON.stringify({ success: true }));
+      })
+      .catch(err => {
+        console.log(err);
+        res.send(JSON.stringify({ success: false }));
+      });
+  });
 });
 
 app.listen(port, () => {
