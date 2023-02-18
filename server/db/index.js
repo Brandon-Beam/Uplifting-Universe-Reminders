@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const port = 3001
 const { getTasks, createTask, deleteTask, updateTask } = require('./queries')
-
+const { MessagingResponse } = require('twilio').twiml;
 const cron = require('node-cron');
 const { response } = require('express')
 
@@ -96,6 +96,15 @@ app.post('/api/cron', (req, res) => {
       });
   });
 });
+
+app.post('/sms', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  twiml.message('The Robots are coming! Head for the hills!');
+
+  res.type('text/xml').send(twiml.toString());
+});
+
 // body has to be on one line for formatting of text
 cron.schedule('0 22 * * *', () => {
   console.log(`'running a test for now'`);
