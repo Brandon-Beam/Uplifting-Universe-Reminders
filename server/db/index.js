@@ -19,6 +19,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.post('/sms', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  twiml.message('The Robots are coming! Head for the hills!');
+
+  res.type('text/xml').send(twiml.toString());
+});
+
 app.get('/', (req, res) => {
   getTasks()
     .then(response => {
@@ -97,13 +105,7 @@ app.post('/api/cron', (req, res) => {
   });
 });
 
-app.post('/sms', (req, res) => {
-  const twiml = new MessagingResponse();
 
-  twiml.message('The Robots are coming! Head for the hills!');
-
-  res.type('text/xml').send(twiml.toString());
-});
 
 // body has to be on one line for formatting of text
 cron.schedule('0 22 * * *', () => {
