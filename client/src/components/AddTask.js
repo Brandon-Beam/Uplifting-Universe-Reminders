@@ -1,15 +1,20 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import React, { useState, useEffect } from 'react';
+
 
 export default function AddTask(props) {
   const handleChange = props.handleChange
   const handleSubmit = props.handleSubmit
   const formData = props.formData
   const EDIT = props.EDIT
-  const setMode = props.setMode
   const deleteSelected = props.deleteSelected
   const data = props.data
   const complete = props.complete
+  const selectedTask = props.selectedTask
+  const OnEdit = props.OnEdit
+
+
   return (
     <div>
       < Form onSubmit={handleSubmit} >
@@ -20,7 +25,7 @@ export default function AddTask(props) {
         </Form.Group>
         <Button type="submit">Add Task</Button>
       </Form >
-      <button className="btn btn-dark" onClick={() => setMode(EDIT)}>Edit Mode</button>
+      <button className="btn btn-dark" onClick={() => OnEdit(EDIT, data, selectedTask)}>Edit Mode</button>
       <button className="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
       <button className="btn btn-success" onClick={() => complete(data)}>Complete Task</button>
     </div >

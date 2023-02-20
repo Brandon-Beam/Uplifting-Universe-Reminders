@@ -147,7 +147,7 @@ function App() {
       setIsChecked(false)
     }
     if (mode === EDIT && selectedTask.length !== 1) {
-      alert('invalid inputs')
+      alert('invalid amount selected')
     }
   }
 
@@ -174,6 +174,21 @@ function App() {
     }
   }
 
+  const OnEdit = (EDIT, data, selectedTask) => {
+    let item = data.filter(item => item.id === Number(selectedTask.join()));
+    setFormData({ name: item[0].task_name })
+    onChange(item[0].date_time)
+    setIsChecked(item[0].priority)
+    setMode(EDIT)
+  }
+
+  const OnAdd = (ADD) => {
+    setFormData({ name: '' })
+    onChange(Date.now())
+    setIsChecked(false)
+    setMode(ADD)
+  }
+
   return (
     <div className='myapp'>
       <Header data={data} />
@@ -192,15 +207,15 @@ function App() {
       {
         mode === ADD && (
           <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
-            formData={formData} setMode={setMode} EDIT={EDIT} deleteSelected={deleteSelected}
+            formData={formData} EDIT={EDIT} deleteSelected={deleteSelected}
             complete={complete} data={data}
-            isChecked={isChecked} setIsChecked={setIsChecked} />)
+            isChecked={isChecked} setIsChecked={setIsChecked} selectedTask={selectedTask} OnEdit={OnEdit} />)
       }
       {
         mode === EDIT && (
           <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
-            formData={formData} setMode={setMode} ADD={ADD} deleteSelected={deleteSelected}
-            complete={complete} data={data} />)
+            formData={formData} ADD={ADD} deleteSelected={deleteSelected}
+            complete={complete} data={data} selectedTask={selectedTask} OnAdd={OnAdd} />)
       }
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask}
       />
