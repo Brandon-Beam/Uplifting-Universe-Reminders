@@ -25,7 +25,7 @@ export default function EditTask(props) {
           </div>
           <div className="checkbox-wrapper">
             <label>
-              <input type="checkbox" checked={isChecked}
+              <input className='margin' type="checkbox" checked={isChecked}
                 onChange={() => setIsChecked((prev) => !prev)} />
               <br />
               <Form.Label>Priority</Form.Label>

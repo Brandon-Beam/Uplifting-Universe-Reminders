@@ -6,7 +6,6 @@ import AddTask from './components/AddTask';
 import EditTask from './components/EditTask';
 import Header from './components/Header';
 
-import TimeSelect from './components/TimeSelect';
 
 function App() {
   //view modes
@@ -57,10 +56,11 @@ function App() {
     })
       .then(response => {
         return response.json();
-      })
+      }).then(response => cronSchedule(value, formData.name, response[0].id))
       .then(() => {
         getTasks();
-      });
+      })
+
   }
 
   function deleteTask(id) {
@@ -100,15 +100,18 @@ function App() {
       );
   }
 
-  function cronSchedule(normalTime, task) {
+  function cronSchedule(normalTime, task, newTask) {
+
     const time = dateToCron(normalTime)
     const body = task
+    const id = newTask
+    console.log(id)
     fetch('/api/cron', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ time, body }),
+      body: JSON.stringify({ time, body, id }),
     })
       .then(response => {
         return response.json();
@@ -134,15 +137,16 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === ADD && formData.name !== '') {
-      cronSchedule(value, formData.name)
-      console.log(dateToCron(value))
       createTask(formData.name, value, isChecked)
+
+
       setFormData({ name: '' })
       setIsChecked(false)
     } if (mode === EDIT && selectedTask.length === 1) {
       updateTask(formData.name, selectedTask, false, value, isChecked)
       setFormData({ name: '' })
       setIsChecked(false)
+      cronSchedule(value, formData.name, Number(selectedTask.join()))
     }
     if (mode === EDIT && selectedTask.length !== 1) {
       alert('invalid amount selected')
@@ -211,7 +215,7 @@ function App() {
 
 
       <div className='buttons'>
-        <button className="btn btn-dark" onClick={() => swap(mode)}>{mode === EDIT && 'Add mode'} {mode === ADD && 'Edit mode'}</button>
+        <button className="btn btn-light" onClick={() => swap(mode)}>{mode === EDIT && 'Add mode'} {mode === ADD && 'Edit mode'}</button>
         <button className="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
         <button className="btn btn-success" onClick={() => complete(data)}>Complete Task</button>
       </div>

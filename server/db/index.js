@@ -87,13 +87,18 @@ app.post('/api/messages', (req, res) => {
 
 app.post('/api/cron', (req, res) => {
   res.header('Content-Type', 'application/json');
-  cron.schedule(req.body.time, () => {
-    console.log(`'running a test for ${req.body.time}'`);
+  let time = req.body.time
+  let body = req.body.body
+  let name = req.body.id
+  console.log(name.stop)
+
+  cron.schedule(time, () => {
+    console.log(`'running a test for ${time}'`);
     client.messages
       .create({
         from: process.env.TWILIO_PHONE_NUMBER,
         to: process.env.MY_NUMBER,
-        body: req.body.body
+        body: body
       })
       .then(() => {
         res.send(JSON.stringify({ success: true }));
@@ -102,7 +107,9 @@ app.post('/api/cron', (req, res) => {
         console.log(err);
         res.send(JSON.stringify({ success: false }));
       });
-  });
+  }, { name });
+
+  console.log(cron.getTasks())
 });
 
 

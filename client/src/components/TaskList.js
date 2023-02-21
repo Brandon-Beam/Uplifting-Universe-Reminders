@@ -5,6 +5,7 @@ export default function TaskList(props) {
   const handleTaskSelection = props.handleTaskSelection
   const selectedTask = props.selectedTask
   return (
+
     <Table striped bordered hover variant="dark">
       <thead>
         <tr>
@@ -42,5 +43,6 @@ export default function TaskList(props) {
           })}
       </tbody>
     </Table>
+
   )
 }
