@@ -6,8 +6,6 @@ import AddTask from './components/AddTask';
 import EditTask from './components/EditTask';
 import Header from './components/Header';
 
-
-import './Sample.css';
 import TimeSelect from './components/TimeSelect';
 
 function App() {
@@ -177,46 +175,46 @@ function App() {
   const OnEdit = (EDIT, data, selectedTask) => {
     let item = data.filter(item => item.id === Number(selectedTask.join()));
     setFormData({ name: item[0].task_name })
-    onChange(item[0].date_time)
+    onChange(new Date(item[0].date_time))
     setIsChecked(item[0].priority)
     setMode(EDIT)
   }
 
   const OnAdd = (ADD) => {
+    const date = new Date
     setFormData({ name: '' })
-    onChange(Date.now())
+    onChange(date.toLocaleString())
     setIsChecked(false)
     setMode(ADD)
+  }
+
+  const swap = (mode) => {
+    if (mode === EDIT) {
+      OnAdd(ADD)
+    }
+    else { OnEdit(EDIT, data, selectedTask) }
   }
 
   return (
     <div className='myapp'>
       <Header data={data} />
-      <button className="btn btn-success" onClick={() => goodJobMessage()}>test text button</button>
-      <button className="btn btn-success" onClick={() => cronSchedule()}>schedule test button</button>
-      <div className='timepriority'>
-        <TimeSelect value={value} onChange={onChange} />
-        <div className="checkbox-wrapper">
-          <label>
-            <input type="checkbox" checked={isChecked}
-              onChange={() => setIsChecked((prev) => !prev)} />
-            <span>priority</span>
-          </label>
-        </div>
-      </div>
       {
         mode === ADD && (
           <AddTask handleChange={handleChange} handleSubmit={handleSubmit}
-            formData={formData} EDIT={EDIT} deleteSelected={deleteSelected}
-            complete={complete} data={data}
-            isChecked={isChecked} setIsChecked={setIsChecked} selectedTask={selectedTask} OnEdit={OnEdit} />)
+            formData={formData} isChecked={isChecked} setIsChecked={setIsChecked} value={value} onChange={onChange} />)
       }
       {
         mode === EDIT && (
           <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
-            formData={formData} ADD={ADD} deleteSelected={deleteSelected}
-            complete={complete} data={data} selectedTask={selectedTask} OnAdd={OnAdd} />)
+            formData={formData} isChecked={isChecked} setIsChecked={setIsChecked} value={value} onChange={onChange} />)
       }
+
+
+      <div className='buttons'>
+        <button className="btn btn-dark" onClick={() => swap(mode)}>{mode === EDIT && 'Add mode'} {mode === ADD && 'Edit mode'}</button>
+        <button className="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
+        <button className="btn btn-success" onClick={() => complete(data)}>Complete Task</button>
+      </div>
       <TaskList data={data} handleTaskSelection={handleTaskSelection} selectedTask={selectedTask}
       />
     </div >
