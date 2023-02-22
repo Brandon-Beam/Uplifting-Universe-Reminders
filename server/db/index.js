@@ -6,10 +6,12 @@ const { getTasks, createTask, deleteTask, updateTask } = require('./queries')
 const { MessagingResponse } = require('twilio').twiml;
 const cron = require('node-cron');
 const { response } = require('express')
+const bodyParser = require('body-parser');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json())
 app.use(function (req, res, next) {
@@ -19,13 +21,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post('/sms', (req, res) => {
-  const twiml = new MessagingResponse();
 
-  twiml.message('The Robots are coming! Head for the hills!');
-
-  res.type('text/xml').send(twiml.toString());
-});
 
 app.get('/', (req, res) => {
   getTasks()
@@ -147,6 +143,22 @@ cron.schedule('0 22 * * *', () => {
     .catch(error => {
       console.log(error)
     })
+});
+
+app.post('/sms', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  if (req.body.Body == 'hello') {
+    twiml.message('Hi!');
+  } else if (req.body.Body == 'bye') {
+    twiml.message('Goodbye');
+  } else {
+    twiml.message(
+      'No Body param match, Twilio sends this in the request to your server.'
+    );
+  }
+  console.log(req.body.Body)
+  res.type('text/xml').send(twiml.toString());
 });
 
 app.listen(port, () => {
