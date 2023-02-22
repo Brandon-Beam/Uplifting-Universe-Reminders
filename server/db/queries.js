@@ -34,6 +34,17 @@ const updateTask = (body, id) => {
     });
 }
 
+const textComplete = (id) => {
+  return pool
+    .query('UPDATE tasks SET completed = true WHERE id = $1;', [id])
+    .then((result) => {
+      return result.rows
+    })
+    .catch((err) => {
+      console.log("Catch: ", err.message);
+    });
+}
+
 const createTask = (body) => {
   const { task_name, date_time, priority } = body
   return pool
@@ -61,5 +72,6 @@ module.exports = {
   getTasks,
   createTask,
   deleteTask,
-  updateTask
+  updateTask,
+  textComplete
 }

@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3001
-const { getTasks, createTask, deleteTask, updateTask } = require('./queries')
+const { getTasks, createTask, deleteTask, updateTask, textComplete } = require('./queries')
 const { MessagingResponse } = require('twilio').twiml;
 const cron = require('node-cron');
 const { response } = require('express')
@@ -147,15 +147,15 @@ cron.schedule('0 22 * * *', () => {
 
 app.post('/sms', (req, res) => {
   const twiml = new MessagingResponse();
+  const incomingText = req.body.Body
 
-  if (req.body.Body == 'hello') {
-    twiml.message('Hi!');
-  } else if (req.body.Body == 'bye') {
+  if (isNaN(incomingText) === false) {
+    textComplete(incomingText)
     twiml.message('Goodbye');
+    console.log(incomingText);
+    return
   } else {
-    twiml.message(
-      'No Body param match, Twilio sends this in the request to your server.'
-    );
+    twiml.message('please reply with the id of the task you wish to complete');
   }
   console.log(req.body.Body)
   res.type('text/xml').send(twiml.toString());
