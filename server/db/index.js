@@ -90,8 +90,6 @@ app.post('/api/cron', (req, res) => {
   let time = req.body.time
   let body = req.body.body
   let name = req.body.id
-  console.log(name.stop)
-
   cron.schedule(time, () => {
     console.log(`'running a test for ${time}'`);
     client.messages
@@ -109,9 +107,16 @@ app.post('/api/cron', (req, res) => {
       });
   }, { name });
 
-  console.log(cron.getTasks())
+  console.log(cron.getTasks().get(name).options)
 });
 
+app.post('/api/cron/delete', (req, res) => {
+  res.header('Content-Type', 'application/json');
+  let name = req.body.id
+  let task = cron.getTasks().get(name)
+  task.stop()
+  console.log(task)
+});
 
 
 // body has to be on one line for formatting of text

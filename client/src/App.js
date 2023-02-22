@@ -77,8 +77,13 @@ function App() {
   }
 
   function deleteSelected() {
-    for (const task of selectedTask)
+    if (selectedTask.length === 1) {
+      const task = Number(selectedTask.join())
+      cronScheduleDelete(task)
       deleteTask(task)
+    } else {
+      alert('must delete one at a time')
+    }
   }
 
 
@@ -105,7 +110,6 @@ function App() {
     const time = dateToCron(normalTime)
     const body = task
     const id = newTask
-    console.log(id)
     fetch('/api/cron', {
       method: 'POST',
       headers: {
@@ -138,15 +142,15 @@ function App() {
     event.preventDefault();
     if (mode === ADD && formData.name !== '') {
       createTask(formData.name, value, isChecked)
-
-
       setFormData({ name: '' })
       setIsChecked(false)
     } if (mode === EDIT && selectedTask.length === 1) {
       updateTask(formData.name, selectedTask, false, value, isChecked)
       setFormData({ name: '' })
       setIsChecked(false)
-      cronSchedule(value, formData.name, Number(selectedTask.join()))
+      const taskNumber = Number(selectedTask.join())
+      cronScheduleDelete(taskNumber)
+      cronSchedule(value, formData.name, taskNumber)
     }
     if (mode === EDIT && selectedTask.length !== 1) {
       alert('invalid amount selected')
@@ -177,7 +181,8 @@ function App() {
   }
 
   const OnEdit = (EDIT, data, selectedTask) => {
-    let item = data.filter(item => item.id === Number(selectedTask.join()));
+    const taskNumber = Number(selectedTask.join())
+    let item = data.filter(item => item.id === taskNumber);
     setFormData({ name: item[0].task_name })
     onChange(new Date(item[0].date_time))
     setIsChecked(item[0].priority)
@@ -185,7 +190,7 @@ function App() {
   }
 
   const OnAdd = (ADD) => {
-    const date = new Date
+    const date = new Date()
     setFormData({ name: '' })
     onChange(date.toLocaleString())
     setIsChecked(false)
@@ -198,6 +203,20 @@ function App() {
     }
     else { OnEdit(EDIT, data, selectedTask) }
   }
+
+
+  function cronScheduleDelete(deleteTask) {
+    const id = deleteTask
+    fetch('/api/cron/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    })
+  }
+
+
 
   return (
     <div className='myapp'>
