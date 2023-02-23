@@ -82,7 +82,7 @@ function App() {
       cronScheduleDelete(task)
       deleteTask(task)
     } else {
-      alert('must delete one at a time')
+      alert('can only delete one at a time, dont give up I believe in you')
     }
   }
 
@@ -153,7 +153,7 @@ function App() {
       cronSchedule(value, formData.name, taskNumber)
     }
     if (mode === EDIT && selectedTask.length !== 1) {
-      alert('invalid amount selected')
+      alert('can only edit one task at a time')
     }
   }
 

@@ -5,7 +5,6 @@ const port = 3001
 const { getTasks, createTask, deleteTask, updateTask, textComplete } = require('./queries')
 const { MessagingResponse } = require('twilio').twiml;
 const cron = require('node-cron');
-const { response } = require('express')
 const bodyParser = require('body-parser');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -92,7 +91,7 @@ app.post('/api/cron', (req, res) => {
       .create({
         from: process.env.TWILIO_PHONE_NUMBER,
         to: process.env.MY_NUMBER,
-        body: body
+        body: `this is your scheduled reminder to complete ${body}. You have the strength to do this! reply with ${name} to mark this task as completed!`
       })
       .then(() => {
         res.send(JSON.stringify({ success: true }));
@@ -145,15 +144,16 @@ cron.schedule('0 22 * * *', () => {
     })
 });
 
-app.post('/sms', (req, res) => {
+app.post('/sms', async (req, res) => {
   const twiml = new MessagingResponse();
   const incomingText = req.body.Body
-
   if (isNaN(incomingText) === false) {
-    textComplete(incomingText)
-    twiml.message('Goodbye');
-    console.log(incomingText);
-    return
+    const tasks = await getTasks()
+    const taskObject = tasks.filter(item => item.id === Number(incomingText))
+    textComplete(incomingText);
+    twiml.message(`you completed ${taskObject[0].task_name}! What an impressive achievement!!`);
+    console.log(taskObject);
+
   } else {
     twiml.message('please reply with the id of the task you wish to complete');
   }

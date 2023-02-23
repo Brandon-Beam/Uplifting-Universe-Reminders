@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 
-const getTasks = () => {
+const getTasks = async () => {
   return pool
     .query(`
     select * from tasks ORDER BY priority DESC, date_time, task_name;`)
