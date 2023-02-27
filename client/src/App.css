@@ -27,7 +27,7 @@ input[type=checkbox] {
 }
 
 .header {
-  color: azure;
+  color: #27B1B6;
 }
 
 .buttons {
@@ -35,6 +35,7 @@ input[type=checkbox] {
   display: flex;
   justify-content: space-evenly;
 }
+
 
 .Sample__container>*>* {
   display: flex;

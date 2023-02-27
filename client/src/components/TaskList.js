@@ -9,15 +9,15 @@ export default function TaskList(props) {
     <Table striped bordered hover variant="dark">
       <thead>
         <tr>
-          <th>task ID</th>
-          <th>task Name</th>
-          <th>priority</th>
-          <th>time and date</th>
-          <th>select</th>
-          <th>complete</th>
+          <th>Task ID</th>
+          <th>Task Name</th>
+          <th>Priority</th>
+          <th>Time and Date</th>
+          <th>Complete</th>
+          <th>Select</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody >
         {data &&
           data.map((task) => {
             return (
@@ -28,6 +28,9 @@ export default function TaskList(props) {
                   <td>high priority</td> :
                   <td>low priority</td>}
                 <td>{new Date(task.date_time).toString()}</td>
+                {task.completed === true ?
+                  <td className='notatable_completed'>Well done!!</td> :
+                  <td>You can do it!!</td>}
                 <td>
                   <input
                     type="checkbox"
@@ -35,9 +38,6 @@ export default function TaskList(props) {
                     onChange={() => handleTaskSelection(task.id)}
                   />
                 </td>
-                {task.completed === true ?
-                  <td>Well done!!</td> :
-                  <td>You can do it!!</td>}
               </tr>
             )
           })}

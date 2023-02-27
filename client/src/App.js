@@ -30,7 +30,6 @@ function App() {
     const days = date.getDate();
     const months = date.getMonth() + 1;
     const dayOfWeek = date.getDay();
-
     return `${seconds} ${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
   };
 
@@ -60,7 +59,6 @@ function App() {
       .then(() => {
         getTasks();
       })
-
   }
 
   function deleteTask(id) {
@@ -86,7 +84,6 @@ function App() {
     }
   }
 
-
   //dateTime needs to be converted to local 
   function updateTask(task_name, selectedTask, complete, dateTime, priority) {
     let id = selectedTask
@@ -106,7 +103,6 @@ function App() {
   }
 
   function cronSchedule(normalTime, task, newTask) {
-
     const time = dateToCron(normalTime)
     const body = task
     const id = newTask
@@ -121,7 +117,6 @@ function App() {
         return response.json();
       })
   }
-
 
   const handleChange = event => {
     setFormData({
@@ -204,19 +199,20 @@ function App() {
     else { OnEdit(EDIT, data, selectedTask) }
   }
 
-
   function cronScheduleDelete(deleteTask) {
     const id = deleteTask
-    fetch('/api/cron/delete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id }),
-    })
+    const task = data.filter(item => item.id === Number(id))
+    if (new Date(task[0].date_time).toLocaleString() > new Date().toLocaleString()) {
+      fetch('/api/cron/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      })
+    }
+    console.log('no crash')
   }
-
-
 
   return (
     <div className='myapp'>
@@ -231,8 +227,6 @@ function App() {
           <EditTask handleChange={handleChange} handleSubmit={handleSubmit}
             formData={formData} isChecked={isChecked} setIsChecked={setIsChecked} value={value} onChange={onChange} />)
       }
-
-
       <div className='buttons'>
         <button className="btn btn-light" onClick={() => swap(mode)}>{mode === EDIT && 'Add mode'} {mode === ADD && 'Edit mode'}</button>
         <button className="btn btn-danger" onClick={deleteSelected}>Delete Task</button>
@@ -243,6 +237,7 @@ function App() {
     </div >
   );
 }
+
 export default App;
 
 
