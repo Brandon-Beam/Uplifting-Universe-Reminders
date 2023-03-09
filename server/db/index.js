@@ -18,7 +18,7 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
   next();
 });
-
+//gets task list
 app.get('/', (req, res) => {
   getTasks()
     .then(response => {
@@ -39,7 +39,7 @@ app.post('/tasks', (req, res) => {
       res.status(500).send(error);
     })
 })
-
+//sends messages via twilio
 app.post('/api/messages', (req, res) => {
   res.header('Content-Type', 'application/json');
   client.messages
@@ -56,7 +56,7 @@ app.post('/api/messages', (req, res) => {
       res.send(JSON.stringify({ success: false }));
     });
 });
-
+// adds to cron schedule
 app.post('/api/cron', (req, res) => {
   res.header('Content-Type', 'application/json');
   let time = req.body.time
@@ -79,7 +79,7 @@ app.post('/api/cron', (req, res) => {
       });
   }, { name });
 });
-
+// deletes task from cron
 app.post('/api/cron/delete', (req, res) => {
   res.header('Content-Type', 'application/json');
   let name = req.body.id
@@ -122,7 +122,7 @@ app.delete('/tasks/:id', (req, res) => {
     })
 })
 
-// body has to be on one line for formatting of text
+// body has to be on one line for formatting of text, sends message at 10pm 
 cron.schedule('0 22 * * *', () => {
   console.log(`'running a test for now'`);
   getTasks()

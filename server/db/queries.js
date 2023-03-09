@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-
+// all db requests go through here
 const getTasks = async () => {
   return pool
     .query(`
@@ -33,7 +33,7 @@ const updateTask = (body, id) => {
       console.log("Catch: ", err.message);
     });
 }
-
+//handles completion through incoming text message
 const textComplete = (id) => {
   return pool
     .query('UPDATE tasks SET completed = true WHERE id = $1;', [id])
