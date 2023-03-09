@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     getTasks();
   }, []);
-
+  //converts normal date to cron style
   const dateToCron = (date) => {
     const seconds = date.getSeconds();
     const minutes = date.getMinutes();
@@ -32,7 +32,7 @@ function App() {
     const dayOfWeek = date.getDay();
     return `${seconds} ${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
   };
-
+  // loads list for page
   function getTasks() {
     fetch('http://localhost:3001')
       .then(response => {
@@ -73,7 +73,7 @@ function App() {
         setSelectedTask([])
       });
   }
-
+  // only allows one delete to go through, dont want to give up
   function deleteSelected() {
     if (selectedTask.length === 1) {
       const task = Number(selectedTask.join())
@@ -101,7 +101,7 @@ function App() {
         setSelectedTask([])
       );
   }
-
+  //schedules tasks to cron
   function cronSchedule(normalTime, task, newTask) {
     const time = dateToCron(normalTime)
     const body = task
@@ -132,7 +132,7 @@ function App() {
       setSelectedTask([...selectedTask, id]);
     }
   };
-
+  // calls functions on submit
   const handleSubmit = (event) => {
     event.preventDefault();
     if (mode === ADD && formData.name !== '') {
@@ -151,7 +151,7 @@ function App() {
       alert('can only edit one task at a time')
     }
   }
-
+  //sends encouragement on completion
   function goodJobMessage(task) {
     const body = `You completed ${task}!! So pleased to see you accomplishing great things`
     fetch('/api/messages', {
@@ -165,7 +165,7 @@ function App() {
         return response.json();
       })
   }
-
+  //completes in db
   const complete = (data) => {
     for (const task of selectedTask) {
       let item = data.filter(item => item.id === task)
@@ -191,14 +191,14 @@ function App() {
     setIsChecked(false)
     setMode(ADD)
   }
-
+  //changes mode between 2 
   const swap = (mode) => {
     if (mode === EDIT) {
       OnAdd(ADD)
     }
     else { OnEdit(EDIT, data, selectedTask) }
   }
-
+  //removes tasks from cron, do not run multiple times per function
   function cronScheduleDelete(deleteTask) {
     const id = deleteTask
     const task = data.filter(item => item.id === Number(id))
